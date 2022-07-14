@@ -35,9 +35,6 @@ H_SOURCE=$(wildcard ./source/*.h)
 # Arquivos .o
 OBJ=$(subst .cpp,.o,$(subst source,objects,$(C_SOURCE)))
 
-# Icon
-ICON=./doc/info.o
-
 # Link .dll
 DLL_LINK=https://github.com/reinaldogpn/makefile/raw/main/allegro_monolith-5.2.dll
 
@@ -68,7 +65,7 @@ all: objFolder $(PROJ_NAME)
 $(PROJ_NAME): $(OBJ)
 	@ echo =======================================================================================
 	@ echo Gerando binarios utilizando o $(CC) ...
-	@ $(CC) $^ $(ICON) -o $@ $(ALLEGRO_LIB)
+	@ $(CC) $^ -o $@ $(ALLEGRO_LIB)
 	@ echo =======================================================================================
 	@ echo Tudo certo! Arquivo executavel gerado: $@
 	@ echo =======================================================================================
