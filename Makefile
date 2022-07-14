@@ -16,7 +16,7 @@
 # "objects" na pasta raiz do projeto, onde estarão contidos os arquivos .o gerados. Além disso, será 
 # gerado um arquivo executável com o nome definido na variável 'PROJ_NAME'.
 #
-# Ao chamar o comando "make run" no terminal, o programa é compilado (se necessário) e executado.
+# Ao chamar o comando "make run" no terminal, o programa é executado.
 #-------------------------------------------------------------------------------------------------------#
 
 .DEFAULT_GOAL := all
@@ -34,6 +34,9 @@ H_SOURCE=$(wildcard ./source/*.h)
 
 # Arquivos .o
 OBJ=$(subst .cpp,.o,$(subst source,objects,$(C_SOURCE)))
+
+# Icon
+ICON=./doc/info.o
 
 # Link .dll
 DLL_LINK=https://github.com/reinaldogpn/makefile/raw/main/allegro_monolith-5.2.dll
@@ -53,7 +56,7 @@ ALLEGRO_INCLUDE=-I $(ALLEGRO_PATH)\include
 ALLEGRO_LIB=$(ALLEGRO_PATH)\lib\liballegro_monolith.dll.a
 
 # Execução do programa ao usar "make run"
-run: all
+run:
 	@ echo =======================================================================================
 	@ echo Executando o programa: $(PROJ_NAME)
 	@ echo =======================================================================================
@@ -65,7 +68,7 @@ all: objFolder $(PROJ_NAME)
 $(PROJ_NAME): $(OBJ)
 	@ echo =======================================================================================
 	@ echo Gerando binarios utilizando o $(CC) ...
-	@ $(CC) $^ -o $@ $(ALLEGRO_LIB)
+	@ $(CC) $^ $(ICON) -o $@ $(ALLEGRO_LIB)
 	@ echo =======================================================================================
 	@ echo Tudo certo! Arquivo executavel gerado: $@
 	@ echo =======================================================================================
@@ -104,6 +107,120 @@ else
     UNAME_S := $(shell uname -s)
 
     ifeq ($(UNAME_S),Linux)
+        
+        DISTRO_VER := $(shell cat /etc/issue)
+            
+            ifeq ($(DISTRO_VER),Arch Linux \r (\l))
+            
+# Nome do projeto
+PROJ_NAME=Pacman.out
+
+# Arquivos .cpp
+C_SOURCE=$(wildcard ./source/*.cpp)
+
+# Arquivos .h
+H_SOURCE=$(wildcard ./source/*.h)
+
+# Arquivos .o
+OBJ=$(subst .cpp,.o,$(subst source,objects,$(C_SOURCE)))
+
+# Compilador / linker
+CC=g++
+
+# Flags para o compilador
+CC_FLAGS=-c         \
+         -Wall
+
+# Flags para o Allegro5.2
+ALLEGRO_FLAGS=-L/lib       \
+              -lallegro    \
+              `pkg-config            \
+              --libs                 \
+              allegro-5              \
+              allegro_audio-5        \
+              allegro_dialog-5       \
+              allegro_image-5        \
+              allegro_memfile-5      \
+              allegro_primitives-5   \
+              allegro_acodec-5       \
+              allegro_color-5        \
+              allegro_font-5         \
+              allegro_main-5         \
+              allegro_physfs-5       \
+              allegro_ttf-5` 
+
+ALLEGRO_INCLUDE=-I/usr/include/allegro5
+
+## Terminal color codes
+Black=			"30"
+Red=			"31"
+Green=			"32"
+Yellow=			"33"
+Blue=			"34"
+Magenta=		"35"
+Cyan=			"36"
+LightGray=		"37"
+Gray=			"90"
+LightRed=		"91"
+LightGreen=		"92"
+LightYellow=	"93"
+LightBlue=		"94"
+LightMagenta=	"95"
+LightCyan=		"96"
+White=			"97"
+
+# Color code
+CCODE=$(LightYellow)
+
+COLOR="\e[0;$(CCODE)m"
+COLOR_BOLD="\e[1;$(CCODE)m"
+NO_COLOR="\e[0m"
+
+UNDERLINE="\e[4m"
+BLINK="\e[5m"
+DIM="\e[2m"
+
+# Executa o arquivo gerado
+run:
+	@ echo -e $(COLOR_BOLD)"Executando o arquivo gerado: "$(UNDERLINE)$(PROJ_NAME)$(NO_COLOR)
+	@ echo ''
+	@ ./$(PROJ_NAME)
+
+# Compilação e linkedição
+all: objFolder $(PROJ_NAME)
+
+$(PROJ_NAME): $(OBJ)
+	@ echo -e $(COLOR_BOLD)"Gerando binários utilizando o $(CC) ..."$(NO_COLOR)
+	@ $(CC) $^ -o $@ $(ALLEGRO_INCLUDE) $(ALLEGRO_FLAGS)
+	@ echo ''
+	@ echo -e $(COLOR_BOLD)"Criação de binários finalizada! Arquivo executável gerado:"$(NO_COLOR)
+	@ echo -e $(COLOR_BOLD)"-->" $(UNDERLINE)$@$(NO_COLOR) #"$(PWD)/"
+	@ echo ''
+
+./objects/%.o: ./source/%.cpp ./source/%.h
+	@ echo -e $(COLOR_BOLD)"Linkando o arquivo alvo utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
+	@ $(CC) $< $(CC_FLAGS) -o $@ $(ALLEGRO_INCLUDE) $(ALLEGRO_FLAGS)
+
+./objects/main.o: ./source/main.cpp $(H_SOURCE)
+	@ echo -e $(COLOR_BOLD)"Linkando o arquivo main utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
+	@ $(CC) $< $(CC_FLAGS) -o $@ $(ALLEGRO_INCLUDE) $(ALLEGRO_FLAGS)
+
+./objects/Main.o: ./source/Main.cpp $(H_SOURCE)
+	@ echo -e $(COLOR_BOLD)"Linkando o arquivo main utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
+	@ $(CC) $< $(CC_FLAGS) -o $@ $(ALLEGRO_INCLUDE) $(ALLEGRO_FLAGS)
+
+# Criação de uma pasta para guardar os arquivos .o
+objFolder:
+	@ mkdir objects
+
+clean:
+	@ rm -rf ./objects/*.o $(PROJ_NAME) *~
+	@ rmdir objects
+
+# Palavras declaradas como "alvo falso"
+.PHONY: all clean
+            
+            else
 
 # Nome do projeto
 PROJ_NAME=Pacman.out
@@ -174,8 +291,8 @@ BLINK="\e[5m"
 DIM="\e[2m"
 
 # Executa o arquivo gerado
-run: all
-	@ echo $(COLOR_BOLD)"Executando o arquivo gerado: "$(UNDERLINE)$(PROJ_NAME)$(NO_COLOR)
+run:
+	@ echo "$(COLOR_BOLD)Executando o arquivo gerado: $(UNDERLINE)$(PROJ_NAME)$(NO_COLOR)"
 	@ echo ''
 	@ ./$(PROJ_NAME)
 
@@ -213,5 +330,6 @@ clean:
 # Palavras declaradas como "alvo falso"
 .PHONY: all clean
 
+          endif
      endif
 endif
