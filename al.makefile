@@ -1,25 +1,3 @@
-#-------------------------------------------------------------------------------------------------------#
-# *** Makefile padrão ***
-#
-# Após muita pesquisa e noites viradas, aprendi a criar um arquivo makefile padrão que funciona
-# para qualquer projeto em C++, sem precisar alterar absolutamente nada no arquivo!!!
-#
-# E o melhor... funciona para windows e para linux!
-#
-# Esse makefile organiza o diretório do projeto e realiza a chamada do processo de compilação de forma
-# automática e também faz a limpeza do diretório raiz do projeto ao acionar o comando "make clean".
-#
-# Para que funcione, este arquivo deve estar na pasta raiz do projeto, juntamente com outra pasta
-# nomeada "source", onde devem estar contidos todos os arquivos .h e .cpp relacionados ao projeto.
-#
-# Ao chamar o comando "make" ou "make build" no terminal, será criada de forma automática uma pasta nomeada 
-# "objects" na pasta raiz do projeto, onde estarão contidos os arquivos .o gerados. Além disso, será 
-# gerado um arquivo executável com o nome definido na variável 'PROJ_NAME'.
-#
-# Ao chamar o comando "make all" no terminal, o programa é compilado e executado após a compilação.
-#
-# Ao chamar o comando "make run" no terminal, o programa é executado.
-#-------------------------------------------------------------------------------------------------------#
 ## Definições globais I ##
 
 # Indica que ao usar o comando "make", serão executadas as instruções definidas em "build"
