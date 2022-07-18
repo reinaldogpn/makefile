@@ -29,7 +29,7 @@ H_SOURCE=$(wildcard ./source/*.h)
 OBJ=$(subst .cpp,.o,$(subst source,objects,$(C_SOURCE)))
 
 # Link .dll
-DLL_LINK=https://github.com/reinaldogpn/makefile/raw/main/allegro_monolith-5.2.dll
+DLL_LINK=https://github.com/reinaldogpn/makefile/raw/main/allegro/allegro_monolith-5.2.dll
 
 # Compilador / linker
 CC=g++
