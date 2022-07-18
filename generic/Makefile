@@ -5,8 +5,7 @@
 # para qualquer projeto em C++, sem precisar alterar absolutamente nada no arquivo!!!
 #
 # Esse makefile organiza o diretório do projeto e realiza a chamada do processo de compilação de forma
-# automática e também faz a limpeza do diretório raiz do projeto ao acionar o comando "make clean" 
-# (para linux) ou "make wclean" (para Windows).
+# automática e também faz a limpeza do diretório raiz do projeto ao acionar o comando "make clean".
 #
 # Para que funcione, este arquivo deve estar na pasta raiz do projeto, juntamente com outra pasta
 # nomeada "source", onde devem estar contidos todos os arquivos .h e .cpp relacionados ao projeto.
