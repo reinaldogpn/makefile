@@ -23,13 +23,17 @@ ifeq ($(OS),Windows_NT)
 # Nome do projeto
 PROJ_NAME=Program.exe
 
+# Criação de uma pasta para guardar os arquivos .o
+objFolder:
+	@ if not exist objects mkdir objects
+
 run:
 	@ echo "Executando o arquivo gerado: $(PROJ_NAME)"
 	@ echo ''
 	@ $(PROJ_NAME)
 
 clean:
-	@ del /Q $(PROJ_NAME).exe
+	@ del /Q $(PROJ_NAME)
 	@ rmdir /S /Q objects
 
 else
@@ -40,6 +44,10 @@ else
 
 # Nome do projeto
 PROJ_NAME=Program.run
+
+# Criação de uma pasta para guardar os arquivos .o
+objFolder:
+	@ mkdir -p objects
 
 # Executa o arquivo gerado
 run:
@@ -74,10 +82,10 @@ CC_FLAGS=-std=c++11 -c -s -w -O2
 build: objFolder $(PROJ_NAME)
 
 $(PROJ_NAME): $(OBJ)
-	@ echo "Gerando binários utilizando o $(CC) ..."
+	@ echo "Gerando binarios utilizando o $(CC) ..."
 	@ $(CC) $^ -o $@
 	@ echo ''
-	@ echo "Criação de binários finalizada! Arquivo executável gerado:"
+	@ echo "Criacao de binarios finalizada! Arquivo executavel gerado:"
 	@ echo "-->" $@
 	@ echo ''
 
@@ -92,10 +100,6 @@ $(PROJ_NAME): $(OBJ)
 ./objects/Main.o: ./source/Main.cpp $(H_SOURCE)
 	@ echo "Linkando o arquivo main utilizando o $(CC):" $<
 	@ $(CC) $< $(CC_FLAGS) -o $@
-
-# Criação de uma pasta para guardar os arquivos .o
-objFolder:
-	@ mkdir -p objects
 
 all: build run
 
