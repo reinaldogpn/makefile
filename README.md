@@ -29,3 +29,5 @@ _- Just using "make" does the same thing._
 _- Using this command will delete the executable file and the "objects" folder and all the files in it._
 
 #
+
+* This makefile works for C projects as well, just replace occurences of _.cpp_ for _.c_ .
