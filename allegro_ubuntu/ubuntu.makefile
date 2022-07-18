@@ -5,8 +5,7 @@
 # para qualquer projeto em C++, sem precisar alterar absolutamente nada no arquivo!!!
 #
 # Esse makefile organiza o diretório do projeto e realiza a chamada do processo de compilação de forma
-# automática e também faz a limpeza do diretório raiz do projeto ao acionar o comando "make clean" 
-# (para linux) ou "make wclean" (para Windows).
+# automática e também faz a limpeza do diretório raiz do projeto ao acionar o comando "make clean".
 #
 # Para que funcione, este arquivo deve estar na pasta raiz do projeto, juntamente com outra pasta
 # nomeada "source", onde devem estar contidos todos os arquivos .h e .cpp relacionados ao projeto.
@@ -15,6 +14,7 @@
 # na pasta raiz do projeto, onde estarão contidos os arquivos .o gerados. Além disso, será gerado um
 # arquivo executável com o nome definido na variável 'PROJ_NAME'.
 #-------------------------------------------------------------------------------------------------------#
+.DEFAULT_GOAL := build
 
 # Nome do projeto
 PROJ_NAME=Pacman.out
@@ -32,8 +32,7 @@ OBJ=$(subst .cpp,.o,$(subst source,objects,$(C_SOURCE)))
 CC=g++
 
 # Flags para o compilador
-CC_FLAGS=-c         \
-         -Wall
+CC_FLAGS=-std=c++11 -c -s -w -O2
 
 # Flags para o Allegro5.2
 ALLEGRO_FLAGS=-L/lib       \
@@ -55,26 +54,27 @@ ALLEGRO_FLAGS=-L/lib       \
 
 ALLEGRO_INCLUDE=-I/usr/include/allegro5
 
-## Terminal color codes
-Black=			"30"
-Red=			"31"
-Green=			"32"
-Yellow=			"33"
-Blue=			"34"
-Magenta=		"35"
-Cyan=			"36"
-LightGray=		"37"
-Gray=			"90"
-LightRed=		"91"
-LightGreen=		"92"
-LightYellow=	"93"
-LightBlue=		"94"
-LightMagenta=	"95"
-LightCyan=		"96"
-White=			"97"
+## INFO: Terminal color codes
+#
+# Black=		"30"
+# Red=			"31"
+# Green=		"32"
+# Yellow=		"33"
+# Blue=			"34"
+# Magenta=		"35"
+# Cyan=			"36"
+# LightGray=		"37"
+# Gray=			"90"
+# LightRed=		"91"
+# LightGreen=		"92"
+# LightYellow=	        "93"
+# LightBlue=		"94"
+# LightMagenta=	        "95"
+# LightCyan=		"96"
+# White=		"97"
 
 # Color code
-CCODE=$(LightYellow)
+CCODE=93
 
 COLOR="\e[0;$(CCODE)m"
 COLOR_BOLD="\e[1;$(CCODE)m"
@@ -86,7 +86,7 @@ DIM="\e[2m"
 
 # Compilação e linkedição
 
-all: objFolder $(PROJ_NAME) run
+build: objFolder $(PROJ_NAME)
 
 $(PROJ_NAME): $(OBJ)
 	@ echo $(COLOR_BOLD)"Gerando binários utilizando o $(CC) ..."$(NO_COLOR)
@@ -118,15 +118,12 @@ run:
 	@ echo ''
 	@ ./$(PROJ_NAME)
 
-# Para linux:
+# Compila e executa o programa
+all: build run
+
 clean:
 	@ rm -rf ./objects/*.o $(PROJ_NAME) *~
 	@ rmdir objects
-
-# Para windows:
-wclean:
-	@ del /Q $(PROJ_NAME).exe
-	@ rmdir /S /Q objects
 
 # Palavras declaradas como "alvo falso"
 .PHONY: all clean
