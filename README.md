@@ -30,4 +30,4 @@ _- Using this command will delete the executable file and the "objects" folder a
 
 #
 
-* This makefile works for C projects as well, just replace occurences of _.cpp_ for _.c_ .
+* This makefile works for C projects as well, just replace all occurences of _.cpp_ for _.c_ and remove _-std=c++11_ flag.
