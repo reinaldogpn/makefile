@@ -75,7 +75,7 @@ $(PROJ_NAME): $(OBJ)
 
 # Criação de uma pasta para guardar os arquivos .o
 objFolder:
-	@ mkdir objects
+	@ if not exist objects mkdir objects
 
 # Execução do programa ao usar "make run"
 run:
@@ -88,8 +88,8 @@ run:
 all: build run
 
 clean:
-	@ del /Q $(PROJ_NAME)
-	@ rmdir /S /Q objects
+	@ if exist $(PROJ_NAME) del /Q $(PROJ_NAME)
+	@ if exist objects rmdir /S /Q objects
 
 # Palavras declaradas como "alvo falso"
 .PHONY: all clean
