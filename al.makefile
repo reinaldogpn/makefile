@@ -12,15 +12,17 @@
 # Para que funcione, este arquivo deve estar na pasta raiz do projeto, juntamente com outra pasta
 # nomeada "source", onde devem estar contidos todos os arquivos .h e .cpp relacionados ao projeto.
 #
-# Ao chamar o comando "make" ou "make all" no terminal, será criada de forma automática uma pasta nomeada 
+# Ao chamar o comando "make" ou "make build" no terminal, será criada de forma automática uma pasta nomeada 
 # "objects" na pasta raiz do projeto, onde estarão contidos os arquivos .o gerados. Além disso, será 
 # gerado um arquivo executável com o nome definido na variável 'PROJ_NAME'.
 #
+# Ao chamar o comando "make all" no terminal, o programa é compilado e executado após a compilação.
+#
 # Ao chamar o comando "make run" no terminal, o programa é executado.
-#-------------------------------------------------------------------------------------------------------
-## Definições globais ##
+#-------------------------------------------------------------------------------------------------------#
+## Definições globais I ##
 
-# Indica que ao usar o comando "make", serão executados os passos definidos em "build"
+# Indica que ao usar o comando "make", serão executadas as instruções definidas em "build"
 .DEFAULT_GOAL := build
 
 # Compilador / linker
@@ -41,6 +43,7 @@ OBJ=$(subst .cpp,.o,$(subst source,objects,$(C_SOURCE)))
 #-------------------------------------------------------------------------------------------------------#
 ## Condicionais ##
 
+# As instruções abaixo são executadas somente se o SO for Windows
 ifeq ($(OS),Windows_NT)
 
 # Nome do projeto
@@ -58,9 +61,6 @@ ALLEGRO_PATH=C:\allegro
 ALLEGRO_INCLUDE=-I $(ALLEGRO_PATH)\include
 
 ALLEGRO_LIB=$(ALLEGRO_PATH)\lib\liballegro_monolith.dll.a
-
-# Compilação e linkedição
-build: objFolder $(PROJ_NAME)
 
 $(PROJ_NAME): $(OBJ)
 	@ echo =======================================================================================
@@ -90,7 +90,7 @@ $(PROJ_NAME): $(OBJ)
 
 # Criação de uma pasta para guardar os arquivos .o
 objFolder:
-	@ mkdir objects
+	@ if not exist objects mkdir objects
 
 # Execução do programa ao usar "make run"
 run:
@@ -99,30 +99,27 @@ run:
 	@ echo =======================================================================================
 	@ $(PROJ_NAME)
 
-# Compila e executa o programa
-all: build run
-
 # Faz a limpeza dos arquivos
 clean:
-	@ del /Q $(PROJ_NAME)
-	@ rmdir /S /Q objects
+	@ if exist $(PROJ_NAME) del /Q $(PROJ_NAME)
+	@ if exist objects rmdir /S /Q objects
 
 else
 
+# As instruções abaixo são executadas somente se o SO for Linux.
     UNAME_S := $(shell uname -s)
 
     ifeq ($(UNAME_S),Linux)
         
         DISTRO_VER := $(shell cat /etc/issue)
-            
+		
+# O parâmetro "-e" é adicionado ao comando "echo" se o SO for Arch Linux para as cores funcionarem corretamente.
         ifeq ($(DISTRO_VER),Arch Linux \r (\l))
             
-             OPT_FLAG=-e
-
+             ECHO_FLAG=echo -e
         else
 
-             OPT_FLAG=
-
+             ECHO_FLAG=echo
         endif
 
 # Nome do projeto
@@ -178,27 +175,24 @@ UNDERLINE="\e[4m"
 BLINK="\e[5m"
 DIM="\e[2m"
 
-# Compilação e linkedição
-build: objFolder $(PROJ_NAME)
-
 $(PROJ_NAME): $(OBJ)
-	@ echo $(OPT_FLAG) $(COLOR_BOLD)"Gerando binários utilizando o $(CC) ..."$(NO_COLOR)
+	@ $(ECHO_FLAG) $(COLOR_BOLD)"Gerando binários utilizando o $(CC) ..."$(NO_COLOR)
 	@ $(CC) $^ -o $@ $(ALLEGRO_INCLUDE) $(ALLEGRO_FLAGS)
-	@ echo $(OPT_FLAG) ''
-	@ echo $(OPT_FLAG) $(COLOR_BOLD)"Criação de binários finalizada! Arquivo executável gerado:"$(NO_COLOR)
-	@ echo $(OPT_FLAG) $(COLOR_BOLD)"-->" $(UNDERLINE)$@$(NO_COLOR)
-	@ echo $(OPT_FLAG) ''
+	@ $(ECHO_FLAG) ''
+	@ $(ECHO_FLAG) $(COLOR_BOLD)"Criação de binários finalizada! Arquivo executável gerado:"$(NO_COLOR)
+	@ $(ECHO_FLAG) $(COLOR_BOLD)"-->" $(UNDERLINE)$@$(NO_COLOR)
+	@ $(ECHO_FLAG) ''
 
 ./objects/%.o: ./source/%.cpp ./source/%.h
-	@$ echo $(OPT_FLAG) $(COLOR_BOLD)"Linkando o arquivo alvo utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
+	@ $(ECHO_FLAG) $(COLOR_BOLD)"Linkando o arquivo alvo utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
 	@ $(CC) $< $(CC_FLAGS) -o $@ $(ALLEGRO_INCLUDE) $(ALLEGRO_FLAGS)
 
 ./objects/main.o: ./source/main.cpp $(H_SOURCE)
-	@ echo $(OPT_FLAG) $(COLOR_BOLD)"Linkando o arquivo main utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
+	@ $(ECHO_FLAG) $(COLOR_BOLD)"Linkando o arquivo main utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
 	@ $(CC) $< $(CC_FLAGS) -o $@ $(ALLEGRO_INCLUDE) $(ALLEGRO_FLAGS)
 
 ./objects/Main.o: ./source/Main.cpp $(H_SOURCE)
-	@ echo $(OPT_FLAG) $(COLOR_BOLD)"Linkando o arquivo main utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
+	@ $(ECHO_FLAG) $(COLOR_BOLD)"Linkando o arquivo main utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
 	@ $(CC) $< $(CC_FLAGS) -o $@ $(ALLEGRO_INCLUDE) $(ALLEGRO_FLAGS)
 
 # Criação de uma pasta para guardar os arquivos .o
@@ -207,12 +201,9 @@ objFolder:
 
 # Executa o arquivo gerado
 run:
-	@ echo $(OPT_FLAG) $(COLOR_BOLD)"Executando o arquivo gerado:" $(UNDERLINE)$(PROJ_NAME)$(NO_COLOR)
-	@ echo $(OPT_FLAG) ''
+	@ $(ECHO_FLAG) $(COLOR_BOLD)"Executando o arquivo gerado:" $(UNDERLINE)$(PROJ_NAME)$(NO_COLOR)
+	@ $(ECHO_FLAG) ''
 	@ ./$(PROJ_NAME)
-
-# Compila e executa o programa
-all: build run
 
 clean:
 	@ rm -rf ./objects/*.o $(PROJ_NAME) *~
@@ -222,5 +213,15 @@ clean:
      
 endif
 
+#-------------------------------------------------------------------------------------------------------#
+## Definições globais II ##
+
+# Compilação e linkedição
+build: objFolder $(PROJ_NAME)
+
+# Compila e executa o programa
+all: build run
+
 # Palavras declaradas como "alvo falso"
 .PHONY: all clean
+#-------------------------------------------------------------------------------------------------------#
