@@ -15,9 +15,45 @@
 # na pasta raiz do projeto, onde estarão contidos os arquivos .o gerados. Além disso, será gerado um
 # arquivo executável com o nome definido na variável 'PROJ_NAME'.
 #-------------------------------------------------------------------------------------------------------#
+# Indica que ao usar o comando "make", serão executados os passos definidos em "build"
+.DEFAULT_GOAL := build
+
+ifeq ($(OS),Windows_NT)
 
 # Nome do projeto
-PROJ_NAME=Pacman.run
+PROJ_NAME=Program.exe
+
+run:
+	@ echo "Executando o arquivo gerado: $(PROJ_NAME)"
+	@ echo ''
+	@ $(PROJ_NAME)
+
+clean:
+	@ del /Q $(PROJ_NAME).exe
+	@ rmdir /S /Q objects
+
+else
+
+     UNAME_S := $(shell uname -s)
+
+     ifeq ($(UNAME_S),Linux)
+
+# Nome do projeto
+PROJ_NAME=Program.run
+
+# Executa o arquivo gerado
+run:
+	@ echo "Executando o arquivo gerado: $(PROJ_NAME)"
+	@ echo ''
+	@ ./$(PROJ_NAME)
+
+clean:
+	@ rm -rf ./objects/*.o $(PROJ_NAME) *~
+	@ rmdir objects
+
+     endif
+
+endif
 
 # Arquivos .cpp
 C_SOURCE=$(wildcard ./source/*.cpp)
@@ -32,81 +68,36 @@ OBJ=$(subst .cpp,.o,$(subst source,objects,$(C_SOURCE)))
 CC=g++
 
 # Flags para o compilador
-CC_FLAGS=-c         \
-         -Wall
-
-## Terminal color codes
-Black=			"30"
-Red=			"31"
-Green=			"32"
-Yellow=			"33"
-Blue=			"34"
-Magenta=		"35"
-Cyan=			"36"
-LightGray=		"37"
-Gray=			"90"
-LightRed=		"91"
-LightGreen=		"92"
-LightYellow=	"93"
-LightBlue=		"94"
-LightMagenta=	"95"
-LightCyan=		"96"
-White=			"97"
-
-# Color code
-CCODE=$(LightYellow)
-
-COLOR="\e[0;$(CCODE)m"
-COLOR_BOLD="\e[1;$(CCODE)m"
-NO_COLOR="\e[0m"
-
-UNDERLINE="\e[4m"
-BLINK="\e[5m"
-DIM="\e[2m"
+CC_FLAGS=-std=c++11 -c -s -w -O2
 
 # Compilação e linkedição
-
-all: objFolder $(PROJ_NAME) run
+build: objFolder $(PROJ_NAME)
 
 $(PROJ_NAME): $(OBJ)
-	@ echo $(COLOR_BOLD)"Gerando binários utilizando o $(CC) ..."$(NO_COLOR)
+	@ echo "Gerando binários utilizando o $(CC) ..."
 	@ $(CC) $^ -o $@
 	@ echo ''
-	@ echo $(COLOR_BOLD)"Criação de binários finalizada! Arquivo executável gerado:"$(NO_COLOR)
-	@ echo $(COLOR_BOLD)"-->" $(UNDERLINE)$@$(NO_COLOR) #"$(PWD)/"
+	@ echo "Criação de binários finalizada! Arquivo executável gerado:"
+	@ echo "-->" $@
 	@ echo ''
 
 ./objects/%.o: ./source/%.cpp ./source/%.h
-	@ echo $(COLOR_BOLD)"Linkando o arquivo alvo utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
+	@ echo "Linkando o arquivo alvo utilizando o $(CC):" $<
 	@ $(CC) $< $(CC_FLAGS) -o $@
 
 ./objects/main.o: ./source/main.cpp $(H_SOURCE)
-	@ echo $(COLOR_BOLD)"Linkando o arquivo main utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
+	@ echo "Linkando o arquivo main utilizando o $(CC):" $<
 	@ $(CC) $< $(CC_FLAGS) -o $@
 
 ./objects/Main.o: ./source/Main.cpp $(H_SOURCE)
-	@ echo $(COLOR_BOLD)"Linkando o arquivo main utilizando o $(CC):" $(COLOR)$<$(NO_COLOR)
+	@ echo "Linkando o arquivo main utilizando o $(CC):" $<
 	@ $(CC) $< $(CC_FLAGS) -o $@
 
 # Criação de uma pasta para guardar os arquivos .o
 objFolder:
-	@ mkdir objects
+	@ mkdir -p objects
 
-# Executa o arquivo gerado
-run:
-	@ echo $(COLOR_BOLD)"Executando o arquivo gerado: "$(UNDERLINE)$(PROJ_NAME)$(NO_COLOR)
-	@ echo ''
-	@ ./$(PROJ_NAME)
-
-# Para linux:
-clean:
-	@ rm -rf ./objects/*.o $(PROJ_NAME) *~
-	@ rmdir objects
-
-# Para windows:
-wclean:
-	@ del /Q $(PROJ_NAME).exe
-	@ rmdir /S /Q objects
+all: build run
 
 # Palavras declaradas como "alvo falso"
 .PHONY: all clean
