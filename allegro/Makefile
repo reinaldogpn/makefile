@@ -28,7 +28,7 @@ ifeq ($(OS),Windows_NT)
 PROJ_NAME=Pacman.exe
 
 # Link .dll
-DLL_LINK=https://github.com/reinaldogpn/makefile/raw/main/allegro/allegro_monolith-5.2.dll
+DLL_LINK=https://github.com/reinaldogpn/makefile/raw/main/allegro/allegro_windows/allegro_monolith-5.2.dll
 
 # Flags para o Allegro 5
 ALLEGRO_PATH=C:\allegro
