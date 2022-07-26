@@ -17,7 +17,7 @@
 # Indica que ao usar o comando "make", serão executados os passos definidos em "build"
 .DEFAULT_GOAL := all
 
-NAME=Formas
+NAME=Program
 
 ifeq ($(OS),Windows_NT)
 
