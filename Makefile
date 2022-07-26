@@ -12,21 +12,23 @@
 #
 # Ao chamar o comando "make" no terminal, será criada de forma automática uma pasta nomeada "objects"
 # na pasta raiz do projeto, onde estarão contidos os arquivos .o gerados. Além disso, será gerado um
-# arquivo executável com o nome definido na variável 'PROJ_NAME'.
+# arquivo executável com o nome definido na variável 'NAME'.
 #-------------------------------------------------------------------------------------------------------#
 # Indica que ao usar o comando "make", serão executados os passos definidos em "build"
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := all
+
+NAME=Formas
 
 ifeq ($(OS),Windows_NT)
 
 # Nome do projeto
-PROJ_NAME=Program.exe
+PROJ_NAME=$(NAME).exe
 
 # Criação de uma pasta para guardar os arquivos .o
 objFolder:
 	@ if not exist objects mkdir objects
 
-run:
+run: all
 	@ echo "Executando o arquivo gerado: $(PROJ_NAME)"
 	@ echo ''
 	@ $(PROJ_NAME)
@@ -42,25 +44,27 @@ else
      ifeq ($(UNAME_S),Linux)
 
 # Nome do projeto
-PROJ_NAME=Program.run
+PROJ_NAME=$(NAME).run
 
 # Criação de uma pasta para guardar os arquivos .o
 objFolder:
 	@ mkdir -p objects
 
 # Executa o arquivo gerado
-run:
+run: all
 	@ echo "Executando o arquivo gerado: $(PROJ_NAME)"
 	@ echo ''
 	@ ./$(PROJ_NAME)
 
 clean:
-	@ rm -rf ./objects/*.o $(PROJ_NAME) *~
-	@ rmdir objects
+	@ rm -rf objects $(PROJ_NAME) *~
 
      endif
 
 endif
+
+#-------------------------------------------------------------------------------------------------------#
+## Definições globais
 
 # Arquivos .cpp
 C_SOURCE=$(wildcard ./source/*.cpp)
@@ -75,10 +79,10 @@ OBJ=$(subst .cpp,.o,$(subst source,objects,$(C_SOURCE)))
 CC=g++
 
 # Flags para o compilador
-CC_FLAGS=-std=c++11 -c -s -w -O2
+CC_FLAGS=-c -s -w -O2
 
 # Compilação e linkedição
-build: objFolder $(PROJ_NAME)
+all: objFolder $(PROJ_NAME)
 
 $(PROJ_NAME): $(OBJ)
 	@ echo "Gerando binarios utilizando o $(CC) ..."
@@ -99,8 +103,6 @@ $(PROJ_NAME): $(OBJ)
 ./objects/Main.o: ./source/Main.cpp $(H_SOURCE)
 	@ echo "Linkando o arquivo main utilizando o $(CC):" $<
 	@ $(CC) $< $(CC_FLAGS) -o $@
-
-all: build run
 
 # Palavras declaradas como "alvo falso"
 .PHONY: all clean
