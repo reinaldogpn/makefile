@@ -33,4 +33,4 @@ _- Using this command will delete the executable file and the "objects" folder a
 #
 * This repo also includes a specif Makefile for compiling Allegro projects with all flags required for it, check "allegro" folder.
   * You can use the default Makefile file on "allegro" folder, it works for Windows and Linux OS. 
-  * The other ones separared into specific folders are deprecated.
+  * The other ones separated into specific folders are deprecated.
