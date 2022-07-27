@@ -1,90 +1,85 @@
-#-------------------------------------------------------------------------------------------------------#
-# *** Makefile padrão ***
-#
-# Após muita pesquisa e noites viradas, aprendi a criar um arquivo makefile padrão que funciona
-# para qualquer projeto em C++, sem precisar alterar absolutamente nada no arquivo!!!
-#
-# Esse makefile organiza o diretório do projeto e realiza a chamada do processo de compilação de forma
-# automática e também faz a limpeza do diretório raiz do projeto ao acionar o comando "make clean".
-#
-# Para que funcione, este arquivo deve estar na pasta raiz do projeto, juntamente com outra pasta
-# nomeada "source", onde devem estar contidos todos os arquivos .h e .cpp relacionados ao projeto.
-#
-# Ao chamar o comando "make" no terminal, será criada de forma automática uma pasta nomeada "objects"
-# na pasta raiz do projeto, onde estarão contidos os arquivos .o gerados. Além disso, será gerado um
-# arquivo executável com o nome definido na variável 'NAME'.
-#-------------------------------------------------------------------------------------------------------#
-# Indica que ao usar o comando "make", serão executados os passos definidos em "build"
+## Global definitions I
+
 .DEFAULT_GOAL := all
 
-NAME=Program
+# Project name
+PROJ_NAME=Program
+
+#Compiler / linker (g++ / gcc)
+CC=g++
+
+# Source extension (.cpp / .c)
+S_EXT=.cpp
+
+# Header extension (.hpp / .h)
+H_EXT=.h
+
+# Compiler flags
+CC_FLAGS=-c -s -w -O2
+
+#-------------------------------------------------------------------------------------------------------#
+## Instructions for Windows OS
 
 ifeq ($(OS),Windows_NT)
 
-# Nome do projeto
-PROJ_NAME=$(NAME).exe
+# Project name with extension
+EXE=$(PROJ_NAME).exe
 
-# Criação de uma pasta para guardar os arquivos .o
+# Creates a folder for keeping .o files
 objFolder:
 	@ if not exist objects mkdir objects
 
+# Builds (if needed) and runs the program
 run: all
-	@ echo "Executando o arquivo gerado: $(PROJ_NAME)"
+	@ echo "Executando o arquivo gerado: $(EXE)"
 	@ echo ''
-	@ $(PROJ_NAME)
+	@ $(EXE)
 
+# Clean up the project folder
 clean:
-	@ del /Q $(PROJ_NAME)
+	@ del /Q $(EXE)
 	@ rmdir /S /Q objects
 
 else
 
+# Instructions for Linux OS
      UNAME_S := $(shell uname -s)
 
      ifeq ($(UNAME_S),Linux)
 
-# Nome do projeto
-PROJ_NAME=$(NAME).run
+EXE=$(PROJ_NAME).run
 
-# Criação de uma pasta para guardar os arquivos .o
 objFolder:
 	@ mkdir -p objects
 
-# Executa o arquivo gerado
 run: all
-	@ echo "Executando o arquivo gerado: $(PROJ_NAME)"
+	@ echo "Executando o arquivo gerado: $(EXE)"
 	@ echo ''
-	@ ./$(PROJ_NAME)
+	@ ./$(EXE)
 
 clean:
-	@ rm -rf objects $(PROJ_NAME) *~
+	@ rm -rf objects $(EXE) *~
 
      endif
 
 endif
 
 #-------------------------------------------------------------------------------------------------------#
-## Definições globais
+## Global definitions II
 
-# Arquivos .cpp
-C_SOURCE=$(wildcard ./source/*.cpp)
+# Source files source (.c / .cpp)
+C_SOURCE=$(wildcard ./source/*$(S_EXT))
 
-# Arquivos .h
-H_SOURCE=$(wildcard ./source/*.h)
+# Header files source (.h / .hpp)
+H_SOURCE=$(wildcard ./source/*$(H_EXT))
 
-# Arquivos .o
-OBJ=$(subst .cpp,.o,$(subst source,objects,$(C_SOURCE)))
+# Binary files instructions
+OBJ=$(subst $(S_EXT),.o,$(subst source,objects,$(C_SOURCE)))
 
-# Compilador / linker
-CC=g++
+# Compiling / linking instructions
+all: objFolder $(EXE)
 
-# Flags para o compilador
-CC_FLAGS=-c -s -w -O2
-
-# Compilação e linkedição
-all: objFolder $(PROJ_NAME)
-
-$(PROJ_NAME): $(OBJ)
+$(EXE): $(OBJ)
 	@ echo "Gerando binarios utilizando o $(CC) ..."
 	@ $(CC) $^ -o $@
 	@ echo ''
@@ -92,17 +87,16 @@ $(PROJ_NAME): $(OBJ)
 	@ echo "-->" $@
 	@ echo ''
 
-./objects/%.o: ./source/%.cpp ./source/%.h
+./objects/%.o: ./source/%$(S_EXT) ./source/%$(H_EXT)
 	@ echo "Linkando o arquivo alvo utilizando o $(CC):" $<
 	@ $(CC) $< $(CC_FLAGS) -o $@
 
-./objects/main.o: ./source/main.cpp $(H_SOURCE)
+./objects/main.o: ./source/main$(S_EXT) $(H_SOURCE)
 	@ echo "Linkando o arquivo main utilizando o $(CC):" $<
 	@ $(CC) $< $(CC_FLAGS) -o $@
 
-./objects/Main.o: ./source/Main.cpp $(H_SOURCE)
+./objects/Main.o: ./source/Main$(S_EXT) $(H_SOURCE)
 	@ echo "Linkando o arquivo main utilizando o $(CC):" $<
 	@ $(CC) $< $(CC_FLAGS) -o $@
 
-# Palavras declaradas como "alvo falso"
 .PHONY: all clean
