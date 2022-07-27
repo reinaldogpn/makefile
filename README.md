@@ -29,3 +29,6 @@ _- Using "make all" does the same thing._
 
         make clean
 _- Using this command will delete the executable file and the "objects" folder and all the files in it._
+
+#
+* This repo also includes a specif Makefile for compiling Allegro projects with all flags required for it, check "allegro" folder.
