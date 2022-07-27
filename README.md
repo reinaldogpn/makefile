@@ -8,7 +8,11 @@ For this makefile to work, header and source files must be organized into a fold
 
 * For changing the project name, just change 'PROJ_NAME' variable value.
 
-* Else, for switching C / C++, just change 'CC', 'H_EXT' and 'S_EXT' variable values.
+* Else, for switching C / C++, just change the following variable values:
+
+  * **CC**: represents the compiler you are going to use, you can change it into 'gcc' (for C projects) or 'g++' (for C++ projects).
+  * **H_EXT**: represents your header files extension, you can use '.h' (for C projects) or '.hpp' (for C++ projects), but '.h' works for both.
+  * **S_EXT**: represents your source files extension, you can use '.c' (for C projects) or '.cpp' (for C++ projects).
 
 # commands
 
