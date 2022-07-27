@@ -4,7 +4,7 @@ These are some versions of a default makefile file I use for my C / C++ projects
 
 # how it works
 
-For this makefile to work, header and source files must be organized into a folder named "source", then the makefile will create another folder named "objects" and will link header and source files generating .o files into the objects folder automatically and then it will compile the program.
+For this makefile to work, header and source files must be organized into a folder named "source", then the makefile will create another folder named "objects" and will link header and source files generating .o files into it, automatically, and then it will compile the program.
 
 * For changing the project name, just change 'PROJ_NAME' variable value.
 
