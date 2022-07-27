@@ -1,6 +1,6 @@
 # makefile
 
-These are some versions of a default makefile file I use for my C++ projects. It works on Windows and Linux (tested on Ubuntu, Pop!OS and Arch so far) with no necessary changes.
+These are some versions of a default makefile file I use for my C / C++ projects. It works on Windows and Linux (tested on Ubuntu, Pop!OS and Arch so far) with no necessary changes.
 
 # how it works
 
