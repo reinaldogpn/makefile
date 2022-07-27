@@ -4,9 +4,11 @@ These are some versions of a default makefile file I use for my C++ projects. It
 
 # how it works
 
-For this makefile to work, .cpp and .h files must be organized into a folder named "source", then the makefile will create another folder named "objects" and will link header and source files generating .o files and moving into the objects folder automatically and then it will compile the program.
+For this makefile to work, header and source files must be organized into a folder named "source", then the makefile will create another folder named "objects" and will link header and source files generating .o files into the objects folder automatically and then it will compile the program.
 
-* For changing the project name, just change the 'NAME' variable value.
+* For changing the project name, just change 'PROJ_NAME' variable value.
+
+* Else, for switching C / C++, just change 'CC', 'H_EXT' and 'S_EXT' variable values.
 
 # commands
 
@@ -23,7 +25,3 @@ _- Using "make all" does the same thing._
 
         make clean
 _- Using this command will delete the executable file and the "objects" folder and all the files in it._
-
-#
-
-* This makefile works for C projects as well but this changes will be necessary: replace _g++_ for _gcc_ and replace all occurences of _.cpp_ for _.c_ .
